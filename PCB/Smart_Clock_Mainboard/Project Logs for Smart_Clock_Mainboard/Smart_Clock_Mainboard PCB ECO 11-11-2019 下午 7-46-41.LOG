@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=GPIO6 Pin=U1-9
+Removed Pin From Net: NetName=GPIO7 Pin=U1-10
+Removed Pin From Net: NetName=GPIO8 Pin=U1-11
+Removed Pin From Net: NetName=GPIO5 Pin=U1-104
+Change Component Footprint: Designator=GPIO Old Footprint=HDR2X7 New Footprint=HDR2X7W
+Added Pin To Net: NetName=GPIO5 Pin=U1-79
+Added Pin To Net: NetName=GPIO6 Pin=U1-80
+Added Pin To Net: NetName=GPIO7 Pin=U1-81
+Added Pin To Net: NetName=GPIO8 Pin=U1-82

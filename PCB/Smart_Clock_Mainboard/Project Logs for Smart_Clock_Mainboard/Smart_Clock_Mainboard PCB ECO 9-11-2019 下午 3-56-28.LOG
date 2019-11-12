@@ -1,0 +1,4 @@
+Change Component DesignItemId : Designator=MPU Old DesignItemId=Header 11 New DesignItemId=Header 9
+Change Component Footprint: Designator=MPU Old Footprint=HDR1X11 New Footprint=HDR1X9
+Change Component Description : Designator=MPU Old Description=Header, 11-Pin New Description=Header, 9-Pin
+Change Component Library : Designator=MPU Old Library=Miscellaneous Connectors.IntLib New Library=Robocn_connectors.IntLib
