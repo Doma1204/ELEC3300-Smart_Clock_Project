@@ -1,0 +1,8 @@
+Removed Pin From Net: NetName=5V Pin=GPIO-9
+Removed Pin From Net: NetName=3.3V Pin=GPIO-10
+Removed Pin From Net: NetName=5V Pin=GPIO-11
+Removed Pin From Net: NetName=3.3V Pin=GPIO-12
+Added Pin To Net: NetName=3.3V Pin=GPIO-9
+Added Pin To Net: NetName=5V Pin=GPIO-10
+Added Pin To Net: NetName=3.3V Pin=GPIO-11
+Added Pin To Net: NetName=5V Pin=GPIO-12
