@@ -1,0 +1,63 @@
+Protel Design System Design Rule Check
+PCB File : \\Mac\Home\Documents\GitHub\ELEC3300-Smart_Clock_Project\PCB\Smart_Clock_Mainboard\Smart_Clock_Mainboard.PcbDoc
+Date     : 14/11/2019
+Time     : ¤W¤È 10:14:36
+
+Processing Rule : Clearance Constraint (Gap=7mil) (All),(All)
+Rule Violations :0
+
+Processing Rule : Short-Circuit Constraint (Allowed=No) (All),(All)
+   Violation between Short-Circuit Constraint: Between Pad ESP_UART-1(5785mil,1955mil) on Multi-Layer And Pad ESP_UART-2(5785mil,1855mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: 5V and ESP_TX
+   Violation between Short-Circuit Constraint: Between Pad ESP_UART-1(5785mil,1955mil) on Multi-Layer And Pad ESP_UART-3(5785mil,1755mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: 5V and ESP_RX
+   Violation between Short-Circuit Constraint: Between Pad ESP_UART-2(5785mil,1855mil) on Multi-Layer And Pad ESP_UART-3(5785mil,1755mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: ESP_TX and ESP_RX
+   Violation between Short-Circuit Constraint: Between Pad SWD-1(4585mil,3040mil) on Multi-Layer And Pad SWD-2(4685mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: 5V and SWCLK
+   Violation between Short-Circuit Constraint: Between Pad SWD-1(4585mil,3040mil) on Multi-Layer And Pad SWD-3(4785mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: 5V and SWDIO
+   Violation between Short-Circuit Constraint: Between Pad SWD-1(4585mil,3040mil) on Multi-Layer And Pad SWD-4(4885mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: 5V and GND
+   Violation between Short-Circuit Constraint: Between Pad SWD-2(4685mil,3040mil) on Multi-Layer And Pad SWD-3(4785mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: SWCLK and SWDIO
+   Violation between Short-Circuit Constraint: Between Pad SWD-2(4685mil,3040mil) on Multi-Layer And Pad SWD-4(4885mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: SWCLK and GND
+   Violation between Short-Circuit Constraint: Between Pad SWD-3(4785mil,3040mil) on Multi-Layer And Pad SWD-4(4885mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: SWDIO and GND
+   Violation between Short-Circuit Constraint: Between Pad UART6-1(4065mil,3040mil) on Multi-Layer And Pad UART6-2(4165mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: 5V and UART6_TX
+   Violation between Short-Circuit Constraint: Between Pad UART6-1(4065mil,3040mil) on Multi-Layer And Pad UART6-3(4265mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: 5V and UART6_RX
+   Violation between Short-Circuit Constraint: Between Pad UART6-1(4065mil,3040mil) on Multi-Layer And Pad UART6-4(4365mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: 5V and GND
+   Violation between Short-Circuit Constraint: Between Pad UART6-2(4165mil,3040mil) on Multi-Layer And Pad UART6-3(4265mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: UART6_TX and UART6_RX
+   Violation between Short-Circuit Constraint: Between Pad UART6-2(4165mil,3040mil) on Multi-Layer And Pad UART6-4(4365mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: UART6_TX and GND
+   Violation between Short-Circuit Constraint: Between Pad UART6-3(4265mil,3040mil) on Multi-Layer And Pad UART6-4(4365mil,3040mil) on Multi-Layer Pads have the same JumperID: 1 but different Nets: UART6_RX and GND
+Rule Violations :15
+
+Processing Rule : Un-Routed Net Constraint ( (All) )
+Rule Violations :0
+
+Processing Rule : Modified Polygon (Allow modified: No), (Allow shelved: No)
+Rule Violations :0
+
+Processing Rule : Width Constraint (Min=7mil) (Max=9999mil) (Preferred=10mil) (All)
+Rule Violations :0
+
+Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=20mil) (Conductor Width=10mil) (Air Gap=10mil) (Entries=4) (Disabled)(All)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=0.5mil) (Max=9999mil) (All)
+Rule Violations :0
+
+Processing Rule : Hole To Hole Clearance (Gap=10mil) (Disabled)(All),(All)
+Rule Violations :0
+
+Processing Rule : Minimum Solder Mask Sliver (Gap=10mil) (Disabled)(All),(All)
+Rule Violations :0
+
+Processing Rule : Silk To Solder Mask (Clearance=10mil) (Disabled)(IsPad),(All)
+Rule Violations :0
+
+Processing Rule : Silk to Silk (Clearance=10mil) (Disabled)(All),(All)
+Rule Violations :0
+
+Processing Rule : Net Antennae (Tolerance=0mil) (Disabled)(All)
+Rule Violations :0
+
+Processing Rule : Height Constraint (Min=0mil) (Max=1000mil) (Prefered=500mil) (Disabled)(All)
+Rule Violations :0
+
+
+Violations Detected : 15
+Waived Violations : 0
+Time Elapsed        : 00:00:01
