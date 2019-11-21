@@ -1,0 +1,28 @@
+--cpu Cortex-M0
+"rgb_panel\startup_stm32f030x6.o"
+"rgb_panel\main.o"
+"rgb_panel\gpio.o"
+"rgb_panel\dma.o"
+"rgb_panel\tim.o"
+"rgb_panel\stm32f0xx_it.o"
+"rgb_panel\stm32f0xx_hal_msp.o"
+"rgb_panel\ws2812.o"
+"rgb_panel\stm32f0xx_hal_tim.o"
+"rgb_panel\stm32f0xx_hal_tim_ex.o"
+"rgb_panel\stm32f0xx_hal_rcc.o"
+"rgb_panel\stm32f0xx_hal_rcc_ex.o"
+"rgb_panel\stm32f0xx_hal.o"
+"rgb_panel\stm32f0xx_hal_i2c.o"
+"rgb_panel\stm32f0xx_hal_i2c_ex.o"
+"rgb_panel\stm32f0xx_hal_gpio.o"
+"rgb_panel\stm32f0xx_hal_dma.o"
+"rgb_panel\stm32f0xx_hal_cortex.o"
+"rgb_panel\stm32f0xx_hal_pwr.o"
+"rgb_panel\stm32f0xx_hal_pwr_ex.o"
+"rgb_panel\stm32f0xx_hal_flash.o"
+"rgb_panel\stm32f0xx_hal_flash_ex.o"
+"rgb_panel\system_stm32f0xx.o"
+--library_type=microlib --strict --scatter "RGB_Panel\RGB_Panel.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "RGB_Panel.map" -o RGB_Panel\RGB_Panel.axf
