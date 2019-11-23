@@ -20,7 +20,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "gpio.h"
 /* USER CODE BEGIN 0 */
-
+const GPIO
+ALL_DIR_PORT = {TOP_GPIO_Port, TOP_Pin|BOTTOM_Pin|RIGHT_Pin|LEFT_Pin},
+TOP_PORT = {TOP_GPIO_Port, TOP_Pin},
+BOTTOM_PORT = {BOTTOM_GPIO_Port, BOTTOM_Pin},
+LEFT_PORT = {LEFT_GPIO_Port, LEFT_Pin},
+RIGHT_PORT = {RIGHT_GPIO_Port, RIGHT_Pin},
+SCL_PORT = {SCL_GPIO_Port, SCL_Pin},
+SDA_PORT = {SDA_GPIO_Port, SDA_Pin};
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/
@@ -56,10 +63,42 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI4_15_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
 }
 
 /* USER CODE BEGIN 2 */
+void signal_detect_rising_gpio_init(const GPIO* gpio) {
+  HAL_GPIO_DeInit(gpio->port, gpio->pin);
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitStruct.Pin = gpio->pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(gpio->port, &GPIO_InitStruct);
+}
 
+void signal_detect_falling_gpio_init(const GPIO* gpio) {
+  HAL_GPIO_DeInit(gpio->port, gpio->pin);
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitStruct.Pin = gpio->pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(gpio->port, &GPIO_InitStruct);
+}
+
+void signal_emit_gpio_init(const GPIO* gpio) {
+  HAL_GPIO_DeInit(gpio->port, gpio->pin);
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitStruct.Pin = gpio->pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(gpio->port, &GPIO_InitStruct);
+}
 /* USER CODE END 2 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

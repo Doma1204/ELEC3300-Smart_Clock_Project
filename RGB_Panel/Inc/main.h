@@ -63,6 +63,22 @@ void Error_Handler(void);
 #define WS2812_Pin GPIO_PIN_6
 #define WS2812_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
+#define TOP_Pin GPIO_PIN_0
+#define TOP_GPIO_Port GPIOA
+#define TOP_EXTI_IRQn EXTI0_1_IRQn
+#define BOTTOM_Pin GPIO_PIN_1
+#define BOTTOM_GPIO_Port GPIOA
+#define BOTTOM_EXTI_IRQn EXTI0_1_IRQn
+#define RIGHT_Pin GPIO_PIN_5
+#define RIGHT_GPIO_Port GPIOA
+#define RIGHT_EXTI_IRQn EXTI4_15_IRQn
+#define LEFT_Pin GPIO_PIN_7
+#define LEFT_GPIO_Port GPIOA
+#define LEFT_EXTI_IRQn EXTI4_15_IRQn
+#define SCL_GPIO_Port GPIOA
+#define SCL_Pin GPIO_PIN_9
+#define SDA_GPIO_Port GPIOA
+#define SDA_Pin GPIO_PIN_10
 
 /* USER CODE END Private defines */
 

@@ -27,6 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "WS2812.h"
+#include "panel_positioning.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -93,6 +94,11 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   ws2812_init();
+  // HAL_Delay(200);
+  // startSearch();
+  HAL_Delay(100);
+  startDetectPanel();
+  // HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -102,12 +108,36 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    if (red && !blue) {--red; ++green;}
-    else if (green) {--green; ++blue;}
-    else if (blue) {--blue; ++red;}
-    ws2812_fill(0, 64, red, green, blue);
-    ws2812_update();
-    HAL_Delay(10);
+    // ws2812_fill(0, tt1, 50, 0, 0);
+    // ws2812_fill(tt1, tt2, 0, 50, 0);
+    // ws2812_update();
+    // HAL_Delay(100);
+
+    // ws2812_fill(0, 64, 50, 10, 10);
+    // ws2812_update();
+
+    // for (uint8_t i = 0; i < getDirection() + 1; ++i) {
+    //   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    //   HAL_Delay(100);
+    //   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+    //   HAL_Delay(100);
+    // }
+    // HAL_Delay(400);
+
+    for (uint8_t i = 0; i < getOrientation() + 1; ++i) {
+      HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+      HAL_Delay(100);
+      HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+      HAL_Delay(100);
+    }
+    HAL_Delay(400);
+
+    // if (red && !blue) {--red; ++green;}
+    // else if (green) {--green; ++blue;}
+    // else if (blue) {--blue; ++red;}
+    // ws2812_fill(0, 64, red, green, blue);
+    // ws2812_update();
+    // HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }

@@ -23,6 +23,7 @@
 #include "stm32f0xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "panel_positioning.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -139,6 +140,79 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f0xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles EXTI line 0 and 1 interrupts.
+  */
+void EXTI0_1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_1_IRQn 0 */
+    if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET) {
+    if (isDetectingPanel()) detectPanel(TOP);
+    else if (isSearchingPanel()) resumeSearch();
+    
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_0);
+  }
+
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_1) != RESET) {
+    if (isDetectingPanel()) detectPanel(BOTTOM);
+    else if (isSearchingPanel()) resumeSearch();
+
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_1);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_1);
+  }
+  /* USER CODE END EXTI0_1_IRQn 0 */
+  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+  /* USER CODE BEGIN EXTI0_1_IRQn 1 */
+
+  /* USER CODE END EXTI0_1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line 4 to 15 interrupts.
+  */
+void EXTI4_15_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI4_15_IRQn 0 */
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_5) != RESET) {
+    if (isDetectingPanel()) detectPanel(RIGHT);
+    else if (isSearchingPanel()) resumeSearch();
+
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_5);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_5);
+  }
+
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_7) != RESET) {
+    if (isDetectingPanel()) detectPanel(LEFT);
+    else if (isSearchingPanel()) resumeSearch();
+
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_7);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_7);
+  }
+
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_9) != RESET) {
+    panelCountInc();
+
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_9);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_9);
+  }
+
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_10) != RESET) {
+    // TODO: start I2C when there is no panel left to be detected
+
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_10);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_10);
+  }
+
+  /* USER CODE END EXTI4_15_IRQn 0 */
+  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
+  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_7);
+  /* USER CODE BEGIN EXTI4_15_IRQn 1 */
+
+  /* USER CODE END EXTI4_15_IRQn 1 */
+}
 
 /**
   * @brief This function handles DMA1 channel 4 and 5 interrupts.

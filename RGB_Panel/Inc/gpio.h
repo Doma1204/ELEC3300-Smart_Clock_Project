@@ -32,13 +32,20 @@
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
+typedef struct _GPIO {
+  GPIO_TypeDef* port;
+  uint16_t pin;
+} GPIO;
 
+extern const GPIO ALL_DIR_PORT, TOP_PORT, BOTTOM_PORT, LEFT_PORT, RIGHT_PORT, SCL_PORT, SDA_PORT;
 /* USER CODE END Private defines */
 
 void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void signal_detect_rising_gpio_init(const GPIO* gpio);
+void signal_detect_falling_gpio_init(const GPIO* gpio);
+void signal_emit_gpio_init(const GPIO* gpio);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

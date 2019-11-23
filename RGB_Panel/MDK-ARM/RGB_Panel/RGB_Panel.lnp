@@ -7,6 +7,7 @@
 "rgb_panel\stm32f0xx_it.o"
 "rgb_panel\stm32f0xx_hal_msp.o"
 "rgb_panel\ws2812.o"
+"rgb_panel\panel_positioning.o"
 "rgb_panel\stm32f0xx_hal_tim.o"
 "rgb_panel\stm32f0xx_hal_tim_ex.o"
 "rgb_panel\stm32f0xx_hal_rcc.o"
