@@ -30,7 +30,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "led.h"
+#include "button.h"
+#include "esp8266.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,7 +64,17 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void btn1_click (void) {
+  led_on(LED2);
+}
 
+void btn1_hold (void) {
+  led_toggle(LED3);
+}
+
+void btn1_release (void) {
+  led_off(LED2);
+}
 /* USER CODE END 0 */
 
 /**
@@ -101,13 +113,14 @@ int main(void)
   MX_ADC1_Init();
   MX_ADC3_Init();
   MX_I2C1_Init();
-  MX_I2C2_Init();
+  // MX_I2C2_Init();
   MX_SPI3_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  // esp8266_init();
+  led_blink(LED1, 500);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,16 +130,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(HAL_GPIO_ReadPin(GPIOD,BTN1_Pin)==GPIO_PIN_RESET){
-			HAL_GPIO_WritePin(GPIOD, LED1_Pin, GPIO_PIN_SET);}
-		else{HAL_GPIO_WritePin(GPIOD, LED1_Pin, GPIO_PIN_RESET);}
-		//else if(HAL_GPIO_ReadPin(GPIOD,BTN2_Pin)){
-			//HAL_GPIO_WritePin(GPIOD, LED2_Pin, GPIO_PIN_SET);}
-		//else if(HAL_GPIO_ReadPin(GPIOG,BTN3_Pin)){
-			//HAL_GPIO_WritePin(GPIOD, LED3_Pin, GPIO_PIN_SET);}
-		//HAL_GPIO_WritePin(GPIOD, LED1_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOD, LED2_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOD, LED3_Pin, GPIO_PIN_SET);
+    led_update();
+    button_update();
   }
   /* USER CODE END 3 */
 }

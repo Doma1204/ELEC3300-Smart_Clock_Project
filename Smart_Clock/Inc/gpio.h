@@ -32,7 +32,10 @@
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-
+typedef struct _GPIO {
+    GPIO_TypeDef* port;
+    uint16_t pin;
+} GPIO;
 /* USER CODE END Private defines */
 
 void MX_GPIO_Init(void);

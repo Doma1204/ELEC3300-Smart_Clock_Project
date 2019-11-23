@@ -53,7 +53,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-void set_color(uint8_t r, uint8_t g, uint8_t b);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -92,9 +92,7 @@ int main(void)
   MX_DMA_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  // HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  // set_color(red, green, blue);
-  // ws2812_init();
+  ws2812_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -110,10 +108,6 @@ int main(void)
     ws2812_fill(0, 64, red, green, blue);
     ws2812_update();
     HAL_Delay(10);
-    // set_color(red, green, blue);
-    // HAL_Delay(10);
-    // set_color(255, 100, 100);
-    // HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -154,37 +148,6 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-// void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim){
-//   if (htim == &htim3) {
-//     HAL_TIM_PWM_Stop_DMA(&htim3, TIM_CHANNEL_1);
-//   }
-// }
-
-// static uint8_t buffer[24];
-// void set_color(uint8_t r, uint8_t g, uint8_t b) {
-//   memset(buffer, 0, sizeof(buffer));
-//   for (uint8_t i = 0; i < 8; ++i) {
-//     buffer[i]    = r & (1 << (7-i)) ? 39 : 21;
-//     buffer[8+i]  = g & (1 << (7-i)) ? 39 : 21;
-//     buffer[16+i] = b & (1 << (7-i)) ? 39 : 21;
-//   }
-
-//   // HAL_UART_Transmit(&huart1, buffer, 24, 100);
-//   HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*) buffer, 24);
-// }
-
-static uint8_t buffer[40+24];
-void set_color(uint8_t r, uint8_t g, uint8_t b) {
-  memset(buffer, 0, sizeof(buffer));
-  for (uint8_t i = 0; i < 8; ++i) {
-    buffer[40+i] = g & (1 << (7-i)) ? 40 : 20;
-    buffer[48+i] = r & (1 << (7-i)) ? 40 : 20;
-    buffer[56+i] = b & (1 << (7-i)) ? 40 : 20;
-  }
-
-  // HAL_UART_Transmit(&huart1, buffer, 24, 100);
-  HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*) buffer, 40+24);
-}
 
 /* USER CODE END 4 */
 

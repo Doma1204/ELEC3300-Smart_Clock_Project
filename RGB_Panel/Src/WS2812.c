@@ -1,7 +1,7 @@
 #include "WS2812.h"
 
 static uint8_t led_color[NUM_LED*3];
-static uint8_t brightness = 255;
+static uint8_t brightness = 10;
 
 /* Basic function to control a WS2812 LED Strip */
 void ws2812_init(void) {
@@ -25,12 +25,9 @@ void ws2812_fill(uint32_t first, uint32_t count, uint8_t r, uint8_t g, uint8_t b
 void ws2812_set_led_color(uint32_t i, uint8_t r, uint8_t g, uint8_t b) {
     if (i < NUM_LED && brightness) {
         uint8_t* led = &led_color[i*3];
-        // led[0] = (r * brightness) >> 8;
-        // led[1] = (g * brightness) >> 8;
-        // led[2] = (b * brightness) >> 8;
-        led[0] = r;
-        led[1] = g;
-        led[2] = b;
+        led[0] = ((r + 1) * brightness) >> 8;
+        led[1] = ((g + 1) * brightness) >> 8;
+        led[2] = ((b + 1) * brightness) >> 8;
     }
 }
 
@@ -68,6 +65,8 @@ void ws2812_update(void) {
     buffer_index = 2;
     led_index = 0;
     fill_buffer(1);
+
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
     HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_1, (uint32_t*) buffer, LED_BUFFER_LENGTH * 2 * 24);
 }
 
@@ -82,6 +81,7 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim){
     if (htim == &htim3) {
         if (transfer_state == 2) {
             HAL_TIM_PWM_Stop_DMA(&htim3, TIM_CHANNEL_1);
+            HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
             transfer_state = 0;
         } else {
             fill_buffer(1);

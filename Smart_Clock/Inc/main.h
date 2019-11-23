@@ -135,6 +135,14 @@ void Error_Handler(void);
 #define ESP_TX_GPIO_Port GPIOB
 #define ESP_RX_Pin GPIO_PIN_7
 #define ESP_RX_GPIO_Port GPIOB
+#define ESP_EN_Pin GPIO_PIN_11
+#define ESP_EN_GPIO_Port GPIOG
+#define ESP_RST_Pin GPIO_PIN_12
+#define ESP_RST_GPIO_Port GPIOG
+#define ESP_IO0_Pin GPIO_PIN_13
+#define ESP_IO0_GPIO_Port GPIOG
+#define ESP_IO2_Pin GPIO_PIN_14
+#define ESP_IO2_GPIO_Port GPIOG
 #define DHT_SCL_Pin GPIO_PIN_8
 #define DHT_SCL_GPIO_Port GPIOB
 #define DHT_SDA_Pin GPIO_PIN_9

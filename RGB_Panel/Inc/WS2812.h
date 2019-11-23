@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include "tim.h"
+#include "main.h"
 
 #define NUM_LED 64
 
