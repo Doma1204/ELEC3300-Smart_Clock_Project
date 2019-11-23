@@ -590,6 +590,11 @@
               <FileType>1</FileType>
               <FilePath>..\Library\Src\esp8266.c</FilePath>
             </File>
+            <File>
+              <FileName>WS2812.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Library\Src\WS2812.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

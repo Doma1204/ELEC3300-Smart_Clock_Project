@@ -41,7 +41,10 @@ typedef struct _GPIO {
 void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void signal_detect_rising_gpio_init(const GPIO* gpio);
+void signal_detect_falling_gpio_init(const GPIO* gpio);
+void signal_input_gpio_init(const GPIO* gpio);
+void signal_emit_gpio_init(const GPIO* gpio);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

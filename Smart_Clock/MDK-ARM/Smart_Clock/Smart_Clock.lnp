@@ -37,6 +37,7 @@
 "smart_clock\led.o"
 "smart_clock\button.o"
 "smart_clock\esp8266.o"
+"smart_clock\ws2812.o"
 --library_type=microlib --strict --scatter "Smart_Clock\Smart_Clock.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

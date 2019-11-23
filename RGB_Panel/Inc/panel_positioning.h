@@ -21,8 +21,9 @@ typedef enum _DIRECTION {
 } Direction;
 
 extern Direction dir, orientation;
-extern uint8_t panelCount;
-extern bool isDetect, isSearch;
+extern volatile uint8_t panelCount;
+extern bool isDetect;
+extern volatile bool isSearch;
 
 #define getDirection() dir
 #define getOrientation() orientation
@@ -35,8 +36,8 @@ void resumeSearch(void);
 
 void startDetectPanel(void);
 void stopDetectPanel(void);
+void startSearch_master(void);
 
 void detectPanel(Direction d);
-void startSearch(void);
 
 #endif

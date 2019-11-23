@@ -33,6 +33,7 @@
 #include "led.h"
 #include "button.h"
 #include "esp8266.h"
+#include "WS2812.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -113,7 +114,7 @@ int main(void)
   MX_ADC1_Init();
   MX_ADC3_Init();
   MX_I2C1_Init();
-  // MX_I2C2_Init();
+  MX_I2C2_Init();
   MX_SPI3_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
@@ -121,6 +122,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   // esp8266_init();
   led_blink(LED1, 500);
+  ws2812_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -130,6 +132,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    static uint32_t last_ws_ticks = 0;
+    uint32_t this_ticks = HAL_GetTick();
+    if (this_ticks - last_ws_ticks >= 500) {
+      static uint8_t ledx = 0, ledy = 0;
+      ws2812_set_pixel(0, 0, ledx, ledy, 100, 0, 0);
+      ledx = ++ledx % 8;
+      if (!ledx) ledy = ++ledy % 8;
+      ws2812_update();
+      led_toggle(LED2);
+      last_ws_ticks = HAL_GetTick();
+    }
     led_update();
     button_update();
   }

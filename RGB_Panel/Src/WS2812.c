@@ -24,6 +24,10 @@ void ws2812_fill(uint32_t first, uint32_t count, uint8_t r, uint8_t g, uint8_t b
     }
 }
 
+void ws2812_fill_with_buffer(uint8_t* buffer) {
+    memcpy(&led_color, buffer, 64*3);
+}
+
 void ws2812_set_led_color(uint32_t i, uint8_t r, uint8_t g, uint8_t b) {
     if (i < NUM_LED && brightness) {
         uint8_t* led = &led_color[i*3];

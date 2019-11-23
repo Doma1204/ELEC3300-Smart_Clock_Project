@@ -1,7 +1,7 @@
 #include "panel_positioning.h"
 
-// Direction dir = RIGHT, orientation = TOP;
-Direction dir = NONE, orientation = NONE;
+Direction dir = RIGHT, orientation = TOP;
+// Direction dir = NONE, orientation = NONE;
 volatile uint8_t panelCount = 0;
 bool isDetect = false;
 
@@ -13,9 +13,10 @@ volatile bool isSearch = false;
 void panelCountInc(void) {++panelCount;}
 void resumeSearch(void) {isPauseSearch = false;}
 
+void startSearch(void);
+
 // initiate the detection and search procedure
 void startDetectPanel(void) {
-    HAL_Delay(100);
     isDetect = true;
     isSearch = false;
     dir = NONE;
@@ -24,9 +25,9 @@ void startDetectPanel(void) {
 
     // HAL_I2C_MspDeInit(&hi2c1);
     signal_emit_gpio_init(&SDA_PORT);
-    signal_detect_falling_gpio_init(&SCL_PORT);
-
     HAL_GPIO_WritePin(SDA_GPIO_Port, SDA_Pin, GPIO_PIN_SET);
+
+    signal_detect_falling_gpio_init(&SCL_PORT);
 
     while(!isSearch); // wait until it detects an incoming signal
 
@@ -40,6 +41,19 @@ void startDetectPanel(void) {
 }
 
 void stopDetectPanel(void) {isDetect = false;}
+
+void startSearch_master(void) {
+    isDetect = false;
+    isSearch = true;
+    dir = RIGHT; // debug
+    orientation = TOP; // debug
+
+    signal_detect_falling_gpio_init(&SDA_PORT);
+    signal_detect_falling_gpio_init(&SCL_PORT);
+
+    HAL_Delay(25);
+    startSearch();
+}
 
 // a look up table for determining which direction of the panel is actually the top direction
 const Direction dir_look_up[4][4] = {
@@ -153,8 +167,6 @@ void emitSignal(Direction d, const GPIO* gpio) {
 }
 
 void startSearch(void) {
-    // isSearch = true; // debug
-
     // switch all signal pin to output
     signal_emit_gpio_init(&ALL_DIR_PORT);
 
@@ -165,8 +177,6 @@ void startSearch(void) {
         case BOTTOM: HAL_GPIO_WritePin(BOTTOM_GPIO_Port, BOTTOM_Pin, GPIO_PIN_SET); break;
         case RIGHT:  HAL_GPIO_WritePin(RIGHT_GPIO_Port, RIGHT_Pin, GPIO_PIN_SET); break;
     }
-
-    // delay(200); // debug
 
     // switch SCL to falling edge interrupt pin to init I2C when there is no panel being undiscovered
     HAL_GPIO_WritePin(SDA_GPIO_Port, SDA_Pin, GPIO_PIN_RESET);
@@ -189,16 +199,3 @@ void startSearch(void) {
         case RIGHT:  HAL_GPIO_WritePin(RIGHT_GPIO_Port, RIGHT_Pin, GPIO_PIN_RESET); break;
     }
 }
-
-// for debug use
-// void detectPanel(void) {
-//     static uint32_t last_ticks = 0;
-//     static uint8_t state = 0;
-//     if (state) {
-//         uint32_t ticks = HAL_GetTick() - last_ticks;
-//         HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-//         HAL_UART_Transmit(&huart1, (uint8_t*) &ticks, 1, 100);
-//     }
-//     last_ticks = HAL_GetTick();
-//     ++state;
-// }

@@ -95,6 +95,10 @@ void Error_Handler(void);
 #define RGB_MISO_GPIO_Port GPIOB
 #define RGB_MOSI_Pin GPIO_PIN_15
 #define RGB_MOSI_GPIO_Port GPIOB
+#define RGB_SCL_Pin GPIO_PIN_10
+#define RGB_SCL_GPIO_Port GPIOB
+#define RGB_SDA_Pin GPIO_PIN_11
+#define RGB_SDA_GPIO_Port GPIOB
 #define RGB_GPIO1_Pin GPIO_PIN_8
 #define RGB_GPIO1_GPIO_Port GPIOD
 #define RGB_GPIO2_Pin GPIO_PIN_9

@@ -37,7 +37,8 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#define MASTER
+// #define SLAVE
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

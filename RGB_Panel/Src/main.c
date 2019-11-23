@@ -26,6 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "i2c.h"
 #include "WS2812.h"
 #include "panel_positioning.h"
 /* USER CODE END Includes */
@@ -59,7 +60,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t red = 255, green = 0, blue = 0;
+static uint8_t buffer[64*3] = {0};
 /* USER CODE END 0 */
 
 /**
@@ -94,11 +95,14 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   ws2812_init();
-  // HAL_Delay(200);
-  // startSearch();
-  HAL_Delay(100);
-  startDetectPanel();
-  // HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+  MX_I2C1_Init(0x02);
+  // #ifdef MASTER
+  //   HAL_Delay(25);
+  //   startSearch_master();
+  // #elif defined(SLAVE)
+  //   HAL_Delay(5);
+  //   startDetectPanel();
+  // #endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -109,12 +113,22 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     // ws2812_fill(0, tt1, 50, 0, 0);
-    // ws2812_fill(tt1, tt2, 0, 50, 0);
     // ws2812_update();
     // HAL_Delay(100);
 
-    // ws2812_fill(0, 64, 50, 10, 10);
+    while(HAL_I2C_Slave_Receive(&hi2c1, buffer, 64*3, 0xFFFF) != HAL_OK);
+    ws2812_fill_with_buffer(buffer);
+    ws2812_update();
+
+    // ws2812_fill(0, 64, 255, 0, 0);
     // ws2812_update();
+    // HAL_Delay(500);
+    // ws2812_fill(0, 64, 0, 255, 0);
+    // ws2812_update();
+    // HAL_Delay(500);
+    // ws2812_fill(0, 64, 0, 0, 255);
+    // ws2812_update();
+    // HAL_Delay(500);
 
     // for (uint8_t i = 0; i < getDirection() + 1; ++i) {
     //   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
@@ -124,20 +138,13 @@ int main(void)
     // }
     // HAL_Delay(400);
 
-    for (uint8_t i = 0; i < getOrientation() + 1; ++i) {
-      HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-      HAL_Delay(100);
-      HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-      HAL_Delay(100);
-    }
-    HAL_Delay(400);
-
-    // if (red && !blue) {--red; ++green;}
-    // else if (green) {--green; ++blue;}
-    // else if (blue) {--blue; ++red;}
-    // ws2812_fill(0, 64, red, green, blue);
-    // ws2812_update();
-    // HAL_Delay(10);
+    // for (uint8_t i = 0; i < getPanelCount() + 1; ++i) {
+    //   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    //   HAL_Delay(100);
+    //   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+    //   HAL_Delay(100);
+    // }
+    // HAL_Delay(400);
   }
   /* USER CODE END 3 */
 }
