@@ -22,12 +22,22 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 \\Mac\Home\Desktop\Notes\ELEC3300\Project\ELEC3300-Smart_Clock_Project\Smart_Clock\MDK-ARM\Smart_Clock.uvprojx
-Project File Date:  11/24/2019
+Project File Date:  11/30/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Smart_Clock'
-"Smart_Clock\Smart_Clock.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+compiling stm32f4xx_it.c...
+compiling xpt2046.c...
+compiling tft.c...
+..\Library\Src\tft.c(93): warning:  #177-D: function "tft_write_hword"  was declared but never referenced
+  static inline void tft_write_hword(uint8_t command, uint16_t data) {
+..\Library\Src\tft.c: 1 warning, 0 errors
+linking...
+Program Size: Code=16758 RO-data=534 RW-data=3816 ZI-data=30664  
+FromELF: creating hex file...
+"Smart_Clock\Smart_Clock.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,7 +60,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:12
 </pre>
 </body>
 </html>

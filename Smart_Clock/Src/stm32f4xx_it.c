@@ -24,6 +24,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "WS2812.h"
+#include "pir.h"
+#include "xpt2046.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,6 +60,9 @@
 
 /* External variables --------------------------------------------------------*/
 extern UART_HandleTypeDef huart1;
+extern DMA_HandleTypeDef hdma_spi1_tx;
+extern DMA_HandleTypeDef hdma_spi1_rx;
+extern SPI_HandleTypeDef hspi1;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -84,7 +89,8 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+  #include "led.h"
+  led_on(LED3);
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -210,6 +216,94 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 1 */
 
   /* USER CODE END USART1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SPI1 global interrupt.
+  */
+void SPI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI1_IRQn 0 */
+
+  /* USER CODE END SPI1_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi1);
+  /* USER CODE BEGIN SPI1_IRQn 1 */
+
+  /* USER CODE END SPI1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 stream0 global interrupt.
+  */
+void DMA2_Stream0_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Stream0_IRQn 0 */
+
+  /* USER CODE END DMA2_Stream0_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_spi1_rx);
+  /* USER CODE BEGIN DMA2_Stream0_IRQn 1 */
+
+  /* USER CODE END DMA2_Stream0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 stream3 global interrupt.
+  */
+void DMA2_Stream3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Stream3_IRQn 0 */
+
+  /* USER CODE END DMA2_Stream3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_spi1_tx);
+  /* USER CODE BEGIN DMA2_Stream3_IRQn 1 */
+
+  /* USER CODE END DMA2_Stream3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line2 interrupt.
+  */
+void EXTI2_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI4_IRQn 0 */
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_2) != RESET) {
+    PIR_interrupt_handle();
+
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_2);
+  }
+  /* USER CODE END EXTI4_IRQn 0 */
+  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
+  /* USER CODE BEGIN EXTI4_IRQn 1 */
+
+  /* USER CODE END EXTI4_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line4 interrupt.
+  */
+void EXTI4_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI4_IRQn 0 */
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_4) != RESET) {
+    // #include "led.h"
+    // // led_toggle(LED2);
+    // if (HAL_GPIO_ReadPin(TFT_PEN_GPIO_Port, TFT_PEN_Pin) == SET) {
+    //   led_off(LED2);
+    // } else {
+    //   led_on(LED2);
+    // }
+
+    touch_interrupt_handler();
+
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_4);
+  }
+  /* USER CODE END EXTI4_IRQn 0 */
+  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
+  /* USER CODE BEGIN EXTI4_IRQn 1 */
+
+  /* USER CODE END EXTI4_IRQn 1 */
 }
 
 /**

@@ -51,21 +51,24 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, TFT_RES_Pin|TFT_DC_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, TFT_DC_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, TFT_RES_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, TFT_CS1_Pin|TFT_CS2_Pin|RGB_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, TFT_CS1_Pin|RGB_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, TFT_CS2_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, RGB_GPIO1_Pin|RGB_GPIO2_Pin|LED1_Pin|LED2_Pin 
                           |LED3_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(SPI3_CS_GPIO_Port, SPI3_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SPI3_CS_GPIO_Port, SPI3_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : PAPin PAPin */
   GPIO_InitStruct.Pin = PIR_Pin|TFT_PEN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  // GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -124,6 +127,12 @@ void MX_GPIO_Init(void)
   /* EXTI interrupt init*/
   // HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
   // HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+  
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);

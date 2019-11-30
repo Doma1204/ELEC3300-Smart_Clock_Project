@@ -10,6 +10,7 @@
 "smart_clock\usart.o"
 "smart_clock\stm32f4xx_it.o"
 "smart_clock\stm32f4xx_hal_msp.o"
+"smart_clock\dma.o"
 "smart_clock\stm32f4xx_hal_adc.o"
 "smart_clock\stm32f4xx_hal_adc_ex.o"
 "smart_clock\stm32f4xx_hal_i2c.o"
@@ -38,6 +39,9 @@
 "smart_clock\button.o"
 "smart_clock\esp8266.o"
 "smart_clock\ws2812.o"
+"smart_clock\xpt2046.o"
+"smart_clock\pir.o"
+"smart_clock\tft.o"
 --library_type=microlib --strict --scatter "Smart_Clock\Smart_Clock.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

@@ -27,6 +27,7 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "dma.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -34,6 +35,9 @@
 #include "button.h"
 #include "esp8266.h"
 #include "WS2812.h"
+#include "tft.h"
+#include "xpt2046.h"
+#include "pir.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -119,10 +123,14 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_USART6_UART_Init();
+  MX_DMA_Init();
   /* USER CODE BEGIN 2 */
   // esp8266_init();
   led_blink(LED1, 500);
-  ws2812_init();
+  PIR_init();
+  tft_init(PIN_ON_LEFT, BLACK, WHITE, RED, GREEN);
+  // ws2812_init();
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -132,17 +140,25 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    static uint32_t last_ws_ticks = 0;
-    uint32_t this_ticks = HAL_GetTick();
-    if (this_ticks - last_ws_ticks >= 500) {
-      static uint8_t ledx = 0, ledy = 0;
-      ws2812_set_pixel(0, 0, ledx, ledy, 100, 0, 0);
-      ledx = ++ledx % 8;
-      if (!ledx) ledy = ++ledy % 8;
-      ws2812_update();
-      led_toggle(LED2);
-      last_ws_ticks = HAL_GetTick();
+    // static uint16_t prev_x = 0xffff, prev_y = 0xffff;
+    // if (prev_x != xpt_getRawX() || prev_y != xpt_getRawY()) {
+    //   prev_x = xpt_getRawX();
+    //   prev_y = xpt_getRawY();
+      
+    //   tft_printi(0, 0, HAL_GetTick());
+    //   tft_prints(0, 1, "X: %d", prev_x);
+    //   tft_prints(0, 2, "Y: %d", prev_y);
+    //   tft_update();
+    // }
+
+    static uint32_t last_ticks = 0;
+    if (HAL_GetTick() - last_ticks >= 100) {
+      tft_printi(0, 0, HAL_GetTick() / 100 % 10);
+      tft_prints(0, 1, "PIR %d", getPIR());
+      tft_update();
+      last_ticks = HAL_GetTick();
     }
+
     led_update();
     button_update();
   }

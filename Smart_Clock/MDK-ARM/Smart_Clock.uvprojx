@@ -440,6 +440,11 @@
               <FileType>1</FileType>
               <FilePath>../Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\dma.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -594,6 +599,21 @@
               <FileName>WS2812.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Library\Src\WS2812.c</FilePath>
+            </File>
+            <File>
+              <FileName>xpt2046.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Library\Src\xpt2046.c</FilePath>
+            </File>
+            <File>
+              <FileName>pir.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Library\Src\pir.c</FilePath>
+            </File>
+            <File>
+              <FileName>tft.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Library\Src\tft.c</FilePath>
             </File>
           </Files>
         </Group>
