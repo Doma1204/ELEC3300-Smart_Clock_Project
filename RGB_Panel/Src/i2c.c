@@ -32,7 +32,14 @@ void MX_I2C1_Init(uint8_t addr)
 
   hi2c1.Instance = I2C1;
   hi2c1.Init.Timing = 0x2000090E;
-  hi2c1.Init.OwnAddress1 = 2;
+  switch(addr) {
+    case 0: hi2c1.Init.OwnAddress1 = 2; break;
+    case 1: hi2c1.Init.OwnAddress1 = 4; break;
+    case 2: hi2c1.Init.OwnAddress1 = 6; break;
+    case 3: hi2c1.Init.OwnAddress1 = 8; break;
+    default: hi2c1.Init.OwnAddress1 = 2; break;
+  }
+  // hi2c1.Init.OwnAddress1 = addr*2;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
   hi2c1.Init.OwnAddress2 = 0;

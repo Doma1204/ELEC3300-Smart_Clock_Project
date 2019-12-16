@@ -615,6 +615,11 @@
               <FileType>1</FileType>
               <FilePath>..\Library\Src\tft.c</FilePath>
             </File>
+            <File>
+              <FileName>gy39.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Library\Src\gy39.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

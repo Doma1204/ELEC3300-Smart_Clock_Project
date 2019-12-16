@@ -95,14 +95,14 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   ws2812_init();
-  MX_I2C1_Init(0x02);
-  // #ifdef MASTER
-  //   HAL_Delay(25);
-  //   startSearch_master();
-  // #elif defined(SLAVE)
-  //   HAL_Delay(5);
-  //   startDetectPanel();
-  // #endif
+  // MX_I2C1_Init(0x02);
+  #ifdef MASTER
+    HAL_Delay(25);
+    startSearch_master();
+  #elif defined(SLAVE)
+    HAL_Delay(5);
+    startDetectPanel();
+  #endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -130,7 +130,7 @@ int main(void)
     // ws2812_update();
     // HAL_Delay(500);
 
-    // for (uint8_t i = 0; i < getDirection() + 1; ++i) {
+    // for (uint8_t i = 0; i < getOrientation() + 1; ++i) {
     //   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
     //   HAL_Delay(100);
     //   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);

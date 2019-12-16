@@ -1,4 +1,5 @@
 #include "WS2812.h"
+#include "panel_positioning.h"
 
 static uint8_t led_color[NUM_LED*3];
 static uint8_t brightness = 10;
@@ -25,15 +26,54 @@ void ws2812_fill(uint32_t first, uint32_t count, uint8_t r, uint8_t g, uint8_t b
 }
 
 void ws2812_fill_with_buffer(uint8_t* buffer) {
-    memcpy(&led_color, buffer, 64*3);
+    switch (getOrientation()) {
+        default:
+        case TOP:
+            memcpy(&led_color, buffer, 64*3);
+            break;
+        
+        case LEFT: {
+            uint8_t i = 0;
+            for (int16_t x = 7; x >= 0; --x) {
+                for (uint16_t y = 0; y < 8; ++y) {
+                    uint8_t* pixel = &buffer[(y*8+x)*3];
+                    ws2812_set_led_color(i++, pixel[0], pixel[1], pixel[2]);
+                }
+            }
+            break;
+        }
+
+        case BOTTOM: {
+            for (uint16_t i = 0; i < NUM_LED; ++i) {
+                uint8_t* pixel = &buffer[i*3];
+                ws2812_set_led_color(NUM_LED-i, pixel[0], pixel[1], pixel[2]);
+            }
+            break;
+        }
+
+        case RIGHT: {
+            uint8_t i = 0;
+            for (uint16_t x = 0; x < 8; ++x) {
+                for (int16_t y = 7; y >= 0; --y) {
+                    uint8_t* pixel = &buffer[(y*8+x)*3];
+                    ws2812_set_led_color(i++, pixel[0], pixel[1], pixel[2]);
+                }
+            }
+            break;
+        }
+
+    }
 }
 
 void ws2812_set_led_color(uint32_t i, uint8_t r, uint8_t g, uint8_t b) {
     if (i < NUM_LED && brightness) {
         uint8_t* led = &led_color[i*3];
-        led[0] = ((r + 1) * brightness) >> 8;
-        led[1] = ((g + 1) * brightness) >> 8;
-        led[2] = ((b + 1) * brightness) >> 8;
+        // led[0] = ((r + 1) * brightness) >> 8;
+        // led[1] = ((g + 1) * brightness) >> 8;
+        // led[2] = ((b + 1) * brightness) >> 8;
+        led[0] = r;
+        led[1] = g;
+        led[2] = b;
     }
 }
 

@@ -5,6 +5,7 @@
 #include "gpio.h"
 #include "led.h"
 #include "tft.h"
+#include "buffer.h"
 
 #define SELECT_X 0x90 // X-axis measurement
 #define SELECT_Y 0xD0 // Y-axis measurement
@@ -14,11 +15,6 @@
 #define CTRL_DFR 0x04 // Differential Reference Mode
 
 #define XPT_SPI &hspi1
-
-typedef union _BUFFER16 {
-    uint8_t buffer[2];
-    uint16_t value;
-} BUFFER16;
 
 void touch_interrupt_handler(void);
 void xpt_readRawValue(uint8_t mode, uint8_t maxSample);

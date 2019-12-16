@@ -38,6 +38,7 @@
 #include "tft.h"
 #include "xpt2046.h"
 #include "pir.h"
+#include "gy39.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,17 +70,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void btn1_click (void) {
-  led_on(LED2);
-}
 
-void btn1_hold (void) {
-  led_toggle(LED3);
-}
-
-void btn1_release (void) {
-  led_off(LED2);
-}
 /* USER CODE END 0 */
 
 /**
@@ -129,6 +120,7 @@ int main(void)
   led_blink(LED1, 500);
   PIR_init();
   tft_init(PIN_ON_LEFT, BLACK, WHITE, RED, GREEN);
+  set_button_onClickListener(BUTTON1, requestTime);
   // ws2812_init();
   
   /* USER CODE END 2 */
@@ -152,15 +144,33 @@ int main(void)
     // }
 
     static uint32_t last_ticks = 0;
-    if (HAL_GetTick() - last_ticks >= 100) {
+    if (HAL_GetTick() - last_ticks >= 50) {
       tft_printi(0, 0, HAL_GetTick() / 100 % 10);
-      tft_prints(0, 1, "PIR %d", getPIR());
+      
+      // tft_prints(0, 1, "PIR %d", getPIR());
+
+      // tft_printc(0, 1, "Lux");
+      // tft_printc(0, 2, "Pressure");
+      // tft_prints(0, 3, "Temperature %d", gy39_getTemperature());
+      // tft_printc(0, 4, "Humidity");
+      // tft_printc(0, 5, "Altitude");
+      // tft_printi(12, 1, gy39_getLux());
+      // tft_printi(12, 2, gy39_getPressure());
+      // // tft_printi(12, 3, gy39_getTemperature());
+      // tft_printi(12, 4, gy39_getHumidity());
+      // tft_printi(12, 5, gy39_getAltitude());
+
+      tft_prints(0, 1, "%d", getTime());
+      tft_prints(0, 2, "%02X %02X %02X %02X %02X %02X %02X", rx_buff[0], rx_buff[1], rx_buff[2], rx_buff[3], rx_buff[4], rx_buff[5], rx_buff[6]);
+
       tft_update();
+      // HAL_UART_Transmit(&huart1, "testin\n", 7, 100);
       last_ticks = HAL_GetTick();
     }
 
     led_update();
     button_update();
+    // gy39_update();
   }
   /* USER CODE END 3 */
 }

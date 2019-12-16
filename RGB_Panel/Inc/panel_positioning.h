@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "stm32f0xx_hal.h"
 #include "gpio.h"
-// #include "i2C.h"
+#include "i2C.h"
 // #include "usart.h"
 
 #define short_time 2
@@ -20,12 +20,12 @@ typedef enum _DIRECTION {
     NONE
 } Direction;
 
-extern Direction dir, orientation;
+extern Direction dirFrom, orientation;
 extern volatile uint8_t panelCount;
 extern bool isDetect;
 extern volatile bool isSearch;
 
-#define getDirection() dir
+#define getDirection() dirFrom
 #define getOrientation() orientation
 #define getPanelCount() panelCount
 #define isDetectingPanel() isDetect

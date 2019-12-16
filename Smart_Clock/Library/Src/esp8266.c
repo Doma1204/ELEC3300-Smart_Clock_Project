@@ -56,3 +56,56 @@
 
 // uint8_t is_esp_flashing(void) {return isFlashing;}
 
+static uint8_t tx_buff[ESP_TX_BUFF_LENGTH];
+uint8_t rx_buff[ESP_RX_BUFF_LENGTH];
+uint8_t data_length = 0;
+static uint32_t curTime = 0;
+
+__forceinline void shiftArray(uint8_t* arr, uint8_t size, uint8_t shift) {
+    for (uint8_t i = 0; i < size; ++i) {
+        arr[i] = arr[i+shift];
+    }
+}
+
+void esp_recieve_handle(void) {
+    // switch (rx_buff[0]) {
+
+    // }
+    // BUFFER32 time;
+    // memcpy(&rx_buff[1], time.buffer, 4);
+
+    if (rx_buff[0] != '\r') {
+        uint8_t i;
+        for (i = 1; i < data_length; ++i)
+            if (rx_buff[i] == '\r') break;
+        
+        uint8_t length = data_length - i;
+        shiftArray(rx_buff, length - i, i);
+        HAL_UART_Receive(ESP_UART, &rx_buff[length - i], length, 100);
+    }
+
+    switch (rx_buff[1]) {
+        case GET_TIME_CMD:
+            curTime = 0;
+            curTime |= rx_buff[5] << 24;
+            curTime |= rx_buff[4] << 16;
+            curTime |= rx_buff[3] << 8;
+            curTime |= rx_buff[2];
+            break;
+
+        default:
+            break;
+    }
+}
+
+uint32_t getTime(void) {return curTime;}
+
+void requestTime(void) {
+    led_toggle(LED3);
+    tx_buff[0] = GET_TIME_CMD;
+    tx_buff[1] = '\n';
+    HAL_UART_Transmit(ESP_UART, tx_buff, GET_TIME_CMD_LENGTH, 100);
+    HAL_UART_Receive(ESP_UART, rx_buff, GET_TIME_DATA_LENGTH, 100);
+    data_length = GET_TIME_CMD_LENGTH;
+    esp_recieve_handle();
+}

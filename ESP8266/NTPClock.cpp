@@ -4,11 +4,11 @@ NTPClock::NTPClock(void): Timezone(DefaultTimezone), requestInterval(DefaultRequ
 
 void NTPClock::init(void) {
 	// Start UDP
-	log("Starting UDP");
+	// log("Starting UDP");
 	UDP.begin(UDP_Port);
 
-	log_("Local Port: ");
-	log(UDP.localPort());
+	// log_("Local Port: ");
+	// log(UDP.localPort());
 
 	// Get the IP address of the NTP server
 	this->updateNTPServerIP();
@@ -32,12 +32,12 @@ void NTPClock::init(void) {
 
 void NTPClock::updateNTPServerIP(void) {
 	if (!WiFi.hostByName(DefaultNTPServerName, timeServerIP)) {
-		log("DNS loopup failed. Rebooting");
+		// log("DNS loopup failed. Rebooting");
 		Serial.flush();
 		ESP.restart();
 	}
 
-	log("Time Server IP: " + timeServerIP);
+	// log("Time Server IP: " + timeServerIP);
 }
 
 void NTPClock:: update(void) {
@@ -53,7 +53,7 @@ void NTPClock:: update(void) {
 
 //Private Functions
 void NTPClock::sendNTPpacket(IPAddress& address) {
-	log("Sending NTP request...");
+//	// log("Sending NTP request...");
 
 	memset(NTPBuffer, 0, NTP_PACKET_SIZE);  // set all bytes in the buffer to 0
 	// Initialize values needed to form NTP request
@@ -86,9 +86,9 @@ bool NTPClock:: updateTime() {
 	// subtract seventy years and add the timezone
 	this->UNIXTime = NTPTime - seventyYears + DefaultTimezone * 3600;
 
-	log("Timezone");
-	log_("NTP Response: ");
-	log(this->UNIXTime);
+//	// log("Timezone");
+//	// log_("NTP Response: ");
+//	// log(this->UNIXTime);
 
 	setTime(this->UNIXTime);
 	return true;

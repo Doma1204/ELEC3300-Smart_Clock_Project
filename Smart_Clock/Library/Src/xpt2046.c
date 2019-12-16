@@ -21,18 +21,29 @@ void touch_interrupt_handler(void) {
 #define XPT_TR(tx_ptr, rx_ptr, size) HAL_SPI_TransmitReceive(XPT_SPI, tx_ptr, rx_ptr, size, 0xffff)
 
 uint16_t read(uint8_t ctrl_byte, uint8_t maxSample) {
-    BUFFER16 cur = {0xff, 0xff}, prev = {0xff, 0xff};
-    BUFFER16 cmd = {0, ctrl_byte};
-    // cmd.buffer[0] = 0;
-    // cmd.buffer[1] = ctrl_byte;
+    // BUFFER16 cur = {0xff, 0xff}, prev = {0xff, 0xff};
+    // BUFFER16 cmd = {0, ctrl_byte};
+    // uint8_t i = 0;
+
+    // do {
+    //     prev = cur;
+    //     XPT_TR(cmd.buffer, cur.buffer, 2);
+    //     cur.value >>= 4;
+    // } while ((prev.value != cur.value) && (++i < maxSample));
+    // return cur.value;
+
+    uint16_t cur = 0xffff, prev = 0xffff;
+    uint8_t cmd[2] = {0, ctrl_byte};
     uint8_t i = 0;
 
+    uint8_t buffer[2] = {0};
     do {
         prev = cur;
-        XPT_TR(cmd.buffer, cur.buffer, 2);
-        cur.value >>= 4;
-    } while ((prev.value != cur.value) && (++i < maxSample));
-    return cur.value;
+        XPT_TR(cmd, buffer, 2);
+        cur = ((uint16_t) buffer[0] << 4) | (buffer[1] >> 4);
+    } while ((prev != cur) && (++i < maxSample));
+
+    return cur;
 }
 
 void xpt_readRawValue(uint8_t mode, uint8_t maxSample) {
