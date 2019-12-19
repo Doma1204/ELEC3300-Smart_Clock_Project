@@ -3,10 +3,14 @@
 
 #include "gpio.h"
 #include "spi.h"
+#include "tim.h"
+#include "pir.h"
 
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdbool.h>
+
+#define TFT_UPDATE_FREQUENCY 100
 
 typedef enum {
 	PIN_ON_TOP,
@@ -102,13 +106,17 @@ void tft_printl(uint8_t x, uint8_t y, int64_t num);
 void tft_printu(uint8_t x, uint8_t y, uint32_t num);
 void tft_printf(uint8_t x, uint8_t y, float num, uint32_t dp);
 void tft_update(void);
+void tft_main_update(void);
 
 //If you have space for it you can buffer all pixels in the entire display and push it using DMA
 void tft_pxbuf_update(uint16_t* tft_px_buffer); //Update pixel buffer
 void tft_pxbuf_write(uint16_t* tft_px_buffer); //Always write text to px buffer
 void tft_push_pxbuf(void* buf, uint32_t x, uint32_t y, uint32_t w, uint32_t h); //Push the pixel buffer to the display with DMA
 void tft_circ_push_pxbuf(void* buf, uint32_t x, uint32_t y, uint32_t w, uint32_t h); //Set DMA in circular mode, call once
+void tft_print_mono(uint8_t* buf, uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint16_t color_1, uint16_t color_0);
 
 void tft_put_logo(uint16_t x, uint16_t y);
+
+void tft_set_brightness(uint16_t percent);
 
 #endif		/* __TFT_H */

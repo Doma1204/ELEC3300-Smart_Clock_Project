@@ -65,3 +65,14 @@ void drop_button_onReleaseListeren(BUTTON btn) {
     BUTTONS[btn].onReleaseListener = 0;
 }
 
+void drop_button_all_listener(BUTTON btn) {
+    drop_button_onClickListener(btn);
+    drop_button_onHoldListeren(btn);
+    drop_button_onReleaseListeren(btn);
+}
+
+void drop_all_button_listener(void) {
+    drop_button_all_listener(BUTTON1);
+    drop_button_all_listener(BUTTON2);
+    drop_button_all_listener(BUTTON3);
+}

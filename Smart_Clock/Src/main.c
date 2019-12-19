@@ -20,25 +20,29 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "adc.h"
+#include "dma.h"
+#include "fatfs.h"
 #include "i2c.h"
 #include "sdio.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "dma.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "led.h"
 #include "button.h"
-#include "esp8266.h"
-#include "WS2812.h"
 #include "tft.h"
-#include "xpt2046.h"
+#include "WS2812.h"
+#include "esp8266.h"
 #include "pir.h"
+#include "xpt2046.h"
 #include "gy39.h"
+#include "file.h"
+#include "strhelper.h"
+#include "UI.h"
+#include "rgb.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,7 +52,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -71,6 +74,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+// static uint8_t sun[350], dry[350], cold[350];
 /* USER CODE END 0 */
 
 /**
@@ -102,27 +106,28 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_SDIO_SD_Init();
   MX_SPI1_Init();
-  MX_SPI2_Init();
-  MX_USART1_UART_Init();
-  MX_ADC1_Init();
-  MX_ADC3_Init();
-  MX_I2C1_Init();
-  MX_I2C2_Init();
-  MX_SPI3_Init();
-  MX_TIM2_Init();
   MX_TIM3_Init();
-  MX_USART6_UART_Init();
-  MX_DMA_Init();
+  MX_USART1_UART_Init();
+  MX_I2C1_Init();
+  // MX_I2C2_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-  // esp8266_init();
-  led_blink(LED1, 500);
   PIR_init();
-  tft_init(PIN_ON_LEFT, BLACK, WHITE, RED, GREEN);
-  set_button_onClickListener(BUTTON1, requestTime);
-  // ws2812_init();
+  led_blink(LED1, 500);
+  tft_init(PIN_ON_LEFT, BLACK, WHITE, GREEN, RED);
+  requestTemperature(Wong_Chuk_Hang);
+
+  ws2812_start_search_panel();
+
+  UI_init();
   
+  extern uint8_t wsBuffer[4];
+  extern uint8_t panel_look_up[MAX_NUM_PANEL][MAX_NUM_PANEL];
+  extern WS2812_STRUCT panel[MAX_NUM_PANEL];
+  extern uint8_t rgb_inited;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -132,45 +137,19 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    // static uint16_t prev_x = 0xffff, prev_y = 0xffff;
-    // if (prev_x != xpt_getRawX() || prev_y != xpt_getRawY()) {
-    //   prev_x = xpt_getRawX();
-    //   prev_y = xpt_getRawY();
-      
-    //   tft_printi(0, 0, HAL_GetTick());
-    //   tft_prints(0, 1, "X: %d", prev_x);
-    //   tft_prints(0, 2, "Y: %d", prev_y);
-    //   tft_update();
-    // }
-
-    static uint32_t last_ticks = 0;
-    if (HAL_GetTick() - last_ticks >= 50) {
-      tft_printi(0, 0, HAL_GetTick() / 100 % 10);
-      
-      // tft_prints(0, 1, "PIR %d", getPIR());
-
-      // tft_printc(0, 1, "Lux");
-      // tft_printc(0, 2, "Pressure");
-      // tft_prints(0, 3, "Temperature %d", gy39_getTemperature());
-      // tft_printc(0, 4, "Humidity");
-      // tft_printc(0, 5, "Altitude");
-      // tft_printi(12, 1, gy39_getLux());
-      // tft_printi(12, 2, gy39_getPressure());
-      // // tft_printi(12, 3, gy39_getTemperature());
-      // tft_printi(12, 4, gy39_getHumidity());
-      // tft_printi(12, 5, gy39_getAltitude());
-
-      tft_prints(0, 1, "%d", getTime());
-      tft_prints(0, 2, "%02X %02X %02X %02X %02X %02X %02X", rx_buff[0], rx_buff[1], rx_buff[2], rx_buff[3], rx_buff[4], rx_buff[5], rx_buff[6]);
-
+    static uint32_t last_tft_ticks = 0;
+    if (HAL_GetTick() - last_tft_ticks >= TFT_UPDATE_FREQUENCY) {
+      UI_update();
+      rgb_update();
       tft_update();
-      // HAL_UART_Transmit(&huart1, "testin\n", 7, 100);
-      last_ticks = HAL_GetTick();
+      ws2812_update();
+      last_tft_ticks = HAL_GetTick();
     }
 
     led_update();
     button_update();
-    // gy39_update();
+    esp_update();
+    gy39_update();
   }
   /* USER CODE END 3 */
 }

@@ -23,7 +23,6 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "WS2812.h"
 #include "pir.h"
 #include "xpt2046.h"
 /* USER CODE END Includes */
@@ -59,10 +58,10 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_spi1_tx;
 extern DMA_HandleTypeDef hdma_spi1_rx;
 extern SPI_HandleTypeDef hspi1;
+extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -89,8 +88,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-  #include "led.h"
-  led_on(LED3);
+
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
@@ -205,17 +203,56 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles USART1 global interrupt.
+  * @brief This function handles EXTI line2 interrupt.
   */
-void USART1_IRQHandler(void)
+void EXTI2_IRQHandler(void)
 {
-  /* USER CODE BEGIN USART1_IRQn 0 */
+  /* USER CODE BEGIN EXTI2_IRQn 0 */
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_2) != RESET) {
+    PIR_interrupt_handle();
 
-  /* USER CODE END USART1_IRQn 0 */
-  HAL_UART_IRQHandler(&huart1);
-  /* USER CODE BEGIN USART1_IRQn 1 */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_2);
+  }
+  /* USER CODE END EXTI2_IRQn 0 */
+  /* USER CODE BEGIN EXTI2_IRQn 1 */
 
-  /* USER CODE END USART1_IRQn 1 */
+  /* USER CODE END EXTI2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line4 interrupt.
+  */
+void EXTI4_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI4_IRQn 0 */
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_4) != RESET) {
+    touch_interrupt_handler();
+    
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_4);
+  }
+  /* USER CODE END EXTI4_IRQn 0 */
+  /* USER CODE BEGIN EXTI4_IRQn 1 */
+
+  /* USER CODE END EXTI4_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line[9:5] interrupts.
+  */
+void EXTI9_5_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI9_5_IRQn 0 */
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_9) != RESET) {
+    ws2812_i2c_init();
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_9);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_9);
+  }
+  /* USER CODE END EXTI9_5_IRQn 0 */
+  /* USER CODE BEGIN EXTI9_5_IRQn 1 */
+
+  /* USER CODE END EXTI9_5_IRQn 1 */
 }
 
 /**
@@ -230,6 +267,44 @@ void SPI1_IRQHandler(void)
   /* USER CODE BEGIN SPI1_IRQn 1 */
 
   /* USER CODE END SPI1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+
+  /* USER CODE END USART1_IRQn 0 */
+  HAL_UART_IRQHandler(&huart1);
+  /* USER CODE BEGIN USART1_IRQn 1 */
+
+  /* USER CODE END USART1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line[15:10] interrupts.
+  */
+void EXTI15_10_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_10) != RESET) {
+    ws2812_panel_count_inc();
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_10);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_10);
+  }
+
+  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_11) != RESET) {
+    // led_toggle(LED3);
+    // ws2812_i2c_init();
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_11);
+    HAL_GPIO_EXTI_Callback(GPIO_PIN_11);
+  }
+  /* USER CODE END EXTI15_10_IRQn 0 */
+  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+
+  /* USER CODE END EXTI15_10_IRQn 1 */
 }
 
 /**
@@ -258,98 +333,6 @@ void DMA2_Stream3_IRQHandler(void)
   /* USER CODE BEGIN DMA2_Stream3_IRQn 1 */
 
   /* USER CODE END DMA2_Stream3_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line2 interrupt.
-  */
-void EXTI2_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI4_IRQn 0 */
-  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_2) != RESET) {
-    PIR_interrupt_handle();
-
-    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
-    HAL_GPIO_EXTI_Callback(GPIO_PIN_2);
-  }
-  /* USER CODE END EXTI4_IRQn 0 */
-  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
-  /* USER CODE BEGIN EXTI4_IRQn 1 */
-
-  /* USER CODE END EXTI4_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line4 interrupt.
-  */
-void EXTI4_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI4_IRQn 0 */
-  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_4) != RESET) {
-    // #include "led.h"
-    // // led_toggle(LED2);
-    // if (HAL_GPIO_ReadPin(TFT_PEN_GPIO_Port, TFT_PEN_Pin) == SET) {
-    //   led_off(LED2);
-    // } else {
-    //   led_on(LED2);
-    // }
-
-    touch_interrupt_handler();
-
-    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4);
-    HAL_GPIO_EXTI_Callback(GPIO_PIN_4);
-  }
-  /* USER CODE END EXTI4_IRQn 0 */
-  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
-  /* USER CODE BEGIN EXTI4_IRQn 1 */
-
-  /* USER CODE END EXTI4_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line[9:5] interrupts.
-  */
-// void EXTI9_5_IRQHandler(void)
-// {
-//   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
-//   if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_9) != RESET) {
-
-//     __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_9);
-//     HAL_GPIO_EXTI_Callback(GPIO_PIN_9);
-//   }
-
-//   /* USER CODE END EXTI9_5_IRQn 0 */
-//   // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_9);
-//   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
-
-//   /* USER CODE END EXTI9_5_IRQn 1 */
-// }
-
-/**
-  * @brief This function handles EXTI line[15:10] interrupts.
-  */
-void EXTI15_10_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_10) != RESET) {
-    ws2812_panel_count_inc();
-
-    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_10);
-    HAL_GPIO_EXTI_Callback(GPIO_PIN_10);
-  }
-
-  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_11) != RESET) {
-    ws2812_i2c_init();
-    
-    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_11);
-    HAL_GPIO_EXTI_Callback(GPIO_PIN_11);
-  }
-  /* USER CODE END EXTI15_10_IRQn 0 */
-  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
-  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
-  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
-
-  /* USER CODE END EXTI15_10_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

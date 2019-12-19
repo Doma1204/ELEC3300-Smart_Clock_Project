@@ -59,14 +59,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define MIC_ADC_Pin GPIO_PIN_0
-#define MIC_ADC_GPIO_Port GPIOA
-#define LDR_ADC_Pin GPIO_PIN_1
-#define LDR_ADC_GPIO_Port GPIOA
 #define PIR_Pin GPIO_PIN_2
 #define PIR_GPIO_Port GPIOA
+#define PIR_EXTI_IRQn EXTI2_IRQn
 #define TFT_PEN_Pin GPIO_PIN_4
 #define TFT_PEN_GPIO_Port GPIOA
+#define TFT_PEN_EXTI_IRQn EXTI4_IRQn
 #define TFT_CLK_Pin GPIO_PIN_5
 #define TFT_CLK_GPIO_Port GPIOA
 #define TFT_MISO_Pin GPIO_PIN_6
@@ -83,44 +81,13 @@ void Error_Handler(void);
 #define TFT_CS1_GPIO_Port GPIOB
 #define TFT_CS2_Pin GPIO_PIN_2
 #define TFT_CS2_GPIO_Port GPIOB
-#define MPU_SCL_Pin GPIO_PIN_10
-#define MPU_SCL_GPIO_Port GPIOB
-#define MPU_SDA_Pin GPIO_PIN_11
-#define MPU_SDA_GPIO_Port GPIOB
-#define RGB_CS_Pin GPIO_PIN_12
-#define RGB_CS_GPIO_Port GPIOB
-#define RGB_CLK_Pin GPIO_PIN_13
-#define RGB_CLK_GPIO_Port GPIOB
-#define RGB_MISO_Pin GPIO_PIN_14
-#define RGB_MISO_GPIO_Port GPIOB
-#define RGB_MOSI_Pin GPIO_PIN_15
-#define RGB_MOSI_GPIO_Port GPIOB
 #define RGB_SCL_Pin GPIO_PIN_10
 #define RGB_SCL_GPIO_Port GPIOB
 #define RGB_SDA_Pin GPIO_PIN_11
 #define RGB_SDA_GPIO_Port GPIOB
-#define RGB_GPIO1_Pin GPIO_PIN_8
-#define RGB_GPIO1_GPIO_Port GPIOD
 #define RGB_GPIO2_Pin GPIO_PIN_9
 #define RGB_GPIO2_GPIO_Port GPIOD
-#define GPIO5_Pin GPIO_PIN_10
-#define GPIO5_GPIO_Port GPIOD
-#define GPIO6_Pin GPIO_PIN_11
-#define GPIO6_GPIO_Port GPIOD
-#define GPIO7_Pin GPIO_PIN_12
-#define GPIO7_GPIO_Port GPIOD
-#define GPIO8_Pin GPIO_PIN_13
-#define GPIO8_GPIO_Port GPIOD
-#define GPIO1_Pin GPIO_PIN_2
-#define GPIO1_GPIO_Port GPIOG
-#define GPIO2_Pin GPIO_PIN_3
-#define GPIO2_GPIO_Port GPIOG
-#define GPIO3_Pin GPIO_PIN_4
-#define GPIO3_GPIO_Port GPIOG
-#define GPIO4_Pin GPIO_PIN_5
-#define GPIO4_GPIO_Port GPIOG
-#define BUZZER_Pin GPIO_PIN_15
-#define BUZZER_GPIO_Port GPIOA
+#define RGB_GPIO2_EXTI_IRQn EXTI9_5_IRQn
 #define LED1_Pin GPIO_PIN_3
 #define LED1_GPIO_Port GPIOD
 #define LED2_Pin GPIO_PIN_4
@@ -133,24 +100,10 @@ void Error_Handler(void);
 #define BTN2_GPIO_Port GPIOD
 #define BTN3_Pin GPIO_PIN_9
 #define BTN3_GPIO_Port GPIOG
-#define SPI3_CS_Pin GPIO_PIN_15
-#define SPI3_CS_GPIO_Port GPIOG
 #define ESP_TX_Pin GPIO_PIN_6
 #define ESP_TX_GPIO_Port GPIOB
 #define ESP_RX_Pin GPIO_PIN_7
 #define ESP_RX_GPIO_Port GPIOB
-#define ESP_EN_Pin GPIO_PIN_11
-#define ESP_EN_GPIO_Port GPIOG
-#define ESP_RST_Pin GPIO_PIN_12
-#define ESP_RST_GPIO_Port GPIOG
-#define ESP_IO0_Pin GPIO_PIN_13
-#define ESP_IO0_GPIO_Port GPIOG
-#define ESP_IO2_Pin GPIO_PIN_14
-#define ESP_IO2_GPIO_Port GPIOG
-#define DHT_SCL_Pin GPIO_PIN_8
-#define DHT_SCL_GPIO_Port GPIOB
-#define DHT_SDA_Pin GPIO_PIN_9
-#define DHT_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -36,10 +36,11 @@ typedef struct _WS2812_STRUCT {
     uint8_t pixel[PIXEL_LENGTH];
 } WS2812_STRUCT;
 
-void ws2812_init(void);
 void ws2812_i2c_init(void);
 void ws2812_start_search_panel(void);
 void ws2812_panel_count_inc(void);
+
+uint16_t get_panel_count(void);
 
 void ws2812_set_brightness(uint8_t b);
 uint8_t ws2812_get_brightness(void);
@@ -48,6 +49,8 @@ void ws2812_clear(uint16_t X, uint16_t Y);
 void ws2812_clear_all(void);
 void ws2812_set_pixel(uint16_t X, uint16_t Y, uint8_t x, uint8_t y, uint8_t r, uint8_t g, uint8_t b);
 void ws2812_fill(uint16_t X, uint16_t Y, uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t r, uint8_t g, uint8_t b);
+void ws2812_print(uint16_t X, uint16_t Y, uint8_t x, uint8_t y, const char* str , uint8_t r, uint8_t g, uint8_t b);
+void ws2812_print_by_id(uint16_t X, uint16_t Y, uint8_t x, uint8_t y, const char* str , uint8_t r, uint8_t g, uint8_t b);
 
 void ws2812_update(void);
 

@@ -1,65 +1,45 @@
 #include "esp8266.h"
 
-// uint8_t isFlashing = 0;
-
-// void esp8266_init(void) {
-//     GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-//     HAL_GPIO_WritePin(ESP_EN_GPIO_Port, ESP_EN_Pin, GPIO_PIN_RESET);
-//     HAL_GPIO_WritePin(ESP_IO0_GPIO_Port, ESP_IO0_Pin, GPIO_PIN_SET);
-
-//     GPIO_InitStruct.Pin = ESP_RST_Pin;
-//     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
-//     GPIO_InitStruct.Pull = GPIO_NOPULL;
-//     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-//     HAL_GPIO_Init(ESP_RST_GPIO_Port, &GPIO_InitStruct);
-
-//     GPIO_InitStruct.Pin = ESP_EN_Pin | ESP_IO0_Pin;
-//     GPIO_InitStruct.Pin = ESP_EN_Pin;
-//     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//     GPIO_InitStruct.Pull = GPIO_NOPULL;
-//     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-//     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-//     void toggle_esp_flashing_mode(void);
-//     set_button_onHoldListener(BUTTON1, 20, 0, toggle_esp_flashing_mode);
-// }
-
-// void toggle_esp_flashing_mode(void) {
-//     if (isFlashing) exit_esp_flashing_mode();
-//     else enter_esp_flashing_mode();
-// }
-
-// void reset_esp(void) {
-//     HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_RESET);
-//     HAL_Delay(1);
-//     HAL_GPIO_WritePin(ESP_RST_GPIO_Port, ESP_RST_Pin, GPIO_PIN_SET);
-// }
-
-// void enter_esp_flashing_mode(void) {
-//     HAL_GPIO_WritePin(ESP_EN_GPIO_Port, ESP_EN_Pin, GPIO_PIN_SET);
-//     HAL_GPIO_WritePin(ESP_IO0_GPIO_Port, ESP_IO0_Pin, GPIO_PIN_RESET);
-//     reset_esp();
-
-//     isFlashing = 1;
-//     led_on(LED3);
-// }
-
-// void exit_esp_flashing_mode(void) {
-//     HAL_GPIO_WritePin(ESP_EN_GPIO_Port, ESP_EN_Pin, GPIO_PIN_RESET);
-//     HAL_GPIO_WritePin(ESP_IO0_GPIO_Port, ESP_IO0_Pin, GPIO_PIN_SET);
-//     reset_esp();
-
-//     isFlashing = 1;
-//     led_off(LED3);
-// }
-
-// uint8_t is_esp_flashing(void) {return isFlashing;}
-
 static uint8_t tx_buff[ESP_TX_BUFF_LENGTH];
 uint8_t rx_buff[ESP_RX_BUFF_LENGTH];
 uint8_t data_length = 0;
-static uint32_t curTime = 0;
+
+uint8_t status = 0;
+uint8_t cur_location = 0;
+uint8_t cur_temp = 0;
+uint8_t cur_icon = 0;
+uint8_t fore_icon[FORECAST_DAY], fore_max[FORECAST_DAY], fore_min[FORECAST_DAY];
+
+uint32_t last_get_time_ticks = 0; 
+uint32_t last_get_temperature_ticks  = 0; 
+uint32_t last_get_forecaset_ticks  = 0; 
+
+void esp_update(void) {
+	static uint32_t last_tft_ticks = 0;
+    uint32_t this_tick = HAL_GetTick();
+    if (this_tick - last_tft_ticks < ESP_UPDATE_FREQUENCY) return;
+    last_tft_ticks = this_tick;
+
+    if (!status) {
+        requestStatus();
+        return;
+    }
+    
+    if (HAL_GetTick() - this_tick >= ESP_TIME_UPDATE_FREQUENCY || !last_get_time_ticks) {
+        requestTime();
+        return;
+    }
+
+    if (HAL_GetTick() - this_tick >= ESP_TEMPERATURE_UPDATE_FREQUENCY || !last_get_temperature_ticks ) {
+        requestTemperature((LOCATION) cur_location);
+        return;
+    }
+
+    if (HAL_GetTick() - this_tick >= ESP_FORECAST_UPDATE_FREQUENCY || !last_get_forecaset_ticks ) {
+        requestForecast();
+        return;
+    }
+}
 
 __forceinline void shiftArray(uint8_t* arr, uint8_t size, uint8_t shift) {
     for (uint8_t i = 0; i < size; ++i) {
@@ -68,12 +48,6 @@ __forceinline void shiftArray(uint8_t* arr, uint8_t size, uint8_t shift) {
 }
 
 void esp_recieve_handle(void) {
-    // switch (rx_buff[0]) {
-
-    // }
-    // BUFFER32 time;
-    // memcpy(&rx_buff[1], time.buffer, 4);
-
     if (rx_buff[0] != '\r') {
         uint8_t i;
         for (i = 1; i < data_length; ++i)
@@ -85,27 +59,77 @@ void esp_recieve_handle(void) {
     }
 
     switch (rx_buff[1]) {
-        case GET_TIME_CMD:
-            curTime = 0;
+        case GET_STATUS_CMD: {
+            status = rx_buff[2];
+        }
+
+        case GET_TIME_CMD: {
+            uint32_t curTime = 0;
             curTime |= rx_buff[5] << 24;
             curTime |= rx_buff[4] << 16;
             curTime |= rx_buff[3] << 8;
             curTime |= rx_buff[2];
+            setTime(curTime);
+            last_get_time_ticks = HAL_GetTick();
             break;
+        }
+
+        case GET_TEMP_CMD: {
+            cur_temp = rx_buff[2];
+            cur_icon = rx_buff[3];
+            last_get_temperature_ticks = HAL_GetTick();
+            break;
+        }
+
+        case GET_FORECAST_CMD: {
+            memcpy(fore_icon, &rx_buff[2], FORECAST_DAY);
+            memcpy(fore_min, &rx_buff[2+FORECAST_DAY], FORECAST_DAY);
+            memcpy(fore_max, &rx_buff[2+FORECAST_DAY*2], FORECAST_DAY);
+            last_get_forecaset_ticks = HAL_GetTick();
+            break;
+        }
 
         default:
             break;
     }
 }
 
-uint32_t getTime(void) {return curTime;}
+void requestStatus(void) {
+    tx_buff[0] = GET_STATUS_CMD;
+    tx_buff[1] = '\n';
+    HAL_UART_Transmit_IT(ESP_UART, tx_buff, GET_STATUS_CMD_LENGTH);
+    HAL_UART_Receive_IT(ESP_UART, rx_buff, GET_TIME_DATA_LENGTH);
+    data_length = GET_STATUS_DATA_LENGTH;
+}
 
 void requestTime(void) {
-    led_toggle(LED3);
     tx_buff[0] = GET_TIME_CMD;
     tx_buff[1] = '\n';
-    HAL_UART_Transmit(ESP_UART, tx_buff, GET_TIME_CMD_LENGTH, 100);
-    HAL_UART_Receive(ESP_UART, rx_buff, GET_TIME_DATA_LENGTH, 100);
-    data_length = GET_TIME_CMD_LENGTH;
-    esp_recieve_handle();
+    HAL_UART_Transmit_IT(ESP_UART, tx_buff, GET_TIME_CMD_LENGTH);
+    HAL_UART_Receive_IT(ESP_UART, rx_buff, GET_TIME_DATA_LENGTH);
+    data_length = GET_TIME_DATA_LENGTH;
+}
+
+void requestTemperature(LOCATION location) {
+    tx_buff[0] = GET_TEMP_CMD;
+    tx_buff[1] = location;
+    tx_buff[2] = '\n';
+    cur_location = location;
+    HAL_UART_Transmit_IT(ESP_UART, tx_buff, GET_TEMP_CMD_LENGTH);
+    HAL_UART_Receive_IT(ESP_UART, rx_buff, GET_TEMP_DATA_LENGTH);
+    data_length = GET_TEMP_DATA_LENGTH;
+}
+
+void requestForecast(void) {
+    tx_buff[0] = GET_FORECAST_CMD;
+    tx_buff[1] = '\n';
+    HAL_UART_Transmit_IT(ESP_UART, tx_buff, GET_FORECAST_CMD_LENGTH);
+    HAL_UART_Receive_IT(ESP_UART, rx_buff, GET_FORECAST_DATA_LENGTH);
+    data_length = GET_FORECAST_DATA_LENGTH;
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == ESP_UART) {
+        esp_recieve_handle();
+    }
 }

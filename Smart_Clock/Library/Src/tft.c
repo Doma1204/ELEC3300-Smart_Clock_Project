@@ -158,6 +158,8 @@ void tft_init(TFT_ORIENTATION orientation, uint16_t in_bg_color, uint16_t in_tex
 	next_screen = 1;
 	tft_orientation = orientation;
 
+	tft_set_brightness(0);
+
 	tft_config();
 	
 	tft_set_bg_color(in_bg_color);
@@ -177,6 +179,8 @@ void tft_init(TFT_ORIENTATION orientation, uint16_t in_bg_color, uint16_t in_tex
 	tft_clear();
 	cur_screen = 0;
 	tft_update();
+
+	tft_set_brightness(999);
 }
 
 /**
@@ -362,7 +366,29 @@ void tft_push_pxbuf(void* buf, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
 	
 	tft_set_region(x, y, w-1, h-1);
 	
-	tft_write_many_dma(0x2c, buf, w*h*2);
+	// tft_write_many_dma(0x2c, buf, w*h*2);
+	tft_write_many(0x2c, buf, w*h*2);
+}
+
+uint16_t pic_buff[3000] = {0};
+void tft_print_mono(uint8_t* buf, uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint16_t color_1, uint16_t color_0) {
+	uint16_t index = 0, width = 0;
+	for (uint16_t i = 0; i < 350; ++i) {
+		for (int8_t j = 7; j >= 0; --j) {
+			if (width == w) {
+				width = 0;
+				break;
+			}
+			pic_buff[index++] = (buf[i] & (1 << j)) ? color_1 : color_0;
+			++width;
+		}
+	}
+
+	// for (uint16_t i = 0; i < 2500; ++i) {
+	// 	pic_buff[i] = WHITE;
+	// }
+
+	tft_push_pxbuf(pic_buff, x, y, w, h);
 }
 
 #define CHAR_BYTES            CHAR_WIDTH*CHAR_HEIGHT*2
@@ -413,6 +439,18 @@ void tft_update(void) {
 	// Swap pointers
 	cur_screen = (cur_screen == 0);
 	next_screen = (next_screen == 0);
+}
+
+void tft_main_update(void) {
+	static uint32_t last_tft_ticks = 0;
+    if (HAL_GetTick() - last_tft_ticks < TFT_UPDATE_FREQUENCY) return;
+    last_tft_ticks = HAL_GetTick();
+	if (getPIR()) {
+		tft_set_brightness(999);
+	} else {
+		tft_set_brightness(0);
+	}
+	// tft_update();
 }
 
 #define tft_px_index(py, px) (tft_px_buffer[px + py*row_width])
@@ -476,4 +514,14 @@ void tft_pxbuf_write(uint16_t* tft_px_buffer) {
 	
 	cur_screen = (cur_screen == 0);
 	next_screen = (next_screen == 0);
+}
+
+void tft_set_brightness(uint16_t percent) {
+	TIM_OC_InitTypeDef sConfigOC = {0};
+	sConfigOC.OCMode = TIM_OCMODE_PWM1;
+	sConfigOC.Pulse = percent;
+	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+	HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
 }

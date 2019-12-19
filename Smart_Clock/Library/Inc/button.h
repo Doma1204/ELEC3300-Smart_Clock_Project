@@ -37,4 +37,7 @@ void drop_button_onClickListener(BUTTON btn);
 void drop_button_onHoldListener(BUTTON btn);
 void drop_button_onReleaseListener(BUTTON btn);
 
+void drop_button_all_listener(BUTTON btn);
+void drop_all_button_listener(void);
+
 #endif
